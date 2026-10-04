@@ -1,25 +1,26 @@
-from fastapi import APIRouter
-from pydantic import BaseModel
+from fastapi import APIRouter, HTTPException
+from pydantic import BaseModel, Field
 
-class Categories(BaseModel):
-    id: str
-    name: str
+router = APIRouter(tags=["Categorias"])
 
-router = APIRouter()
+class CategoryScheme(BaseModel):
+    id: int
+    name: str = Field(min_length=3)
 
-category = []
 
-@router.post('/category/create')
-def create_category(create_category: Categories):
-    user = create_category
+db_categories = []
+
+@router.post('/')
+def create_category(category: CategoryScheme):
+    for cat in db_categories:
+        if cat["id"] == category.id:
+            raise HTTPException(status_code=400, detail="La categoria ya existe")
     
-    if len(user.name) < 8:
-        return { f"Name must have 8 characters at least" }
+    new_cat = category.model_dump()
+    db_categories.append(new_cat)
     
-    category.append({ "id": user.id, "name": user.name })
-    
-    return { "message" : "A new category has been created", "category" : category }
+    return { "message" : "Se creo una nueva categoria", "category" : new_cat }
 
-@router.get('/category/info')
+@router.get('/')
 async def get_categories():
-    return { "message" : "Categories listed successfully", "categories" : category }
+    return { "categories" : db_categories }
