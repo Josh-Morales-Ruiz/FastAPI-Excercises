@@ -1,4 +1,4 @@
-from routers.categories import db_categories
+from Server.Tracker_API.routers.categories import db_categories
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 

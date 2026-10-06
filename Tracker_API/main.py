@@ -1,5 +1,6 @@
+from Server.Tracker_API.routers import categories
 from fastapi import FastAPI
-from routers import categories, tasks
+from Server.Tracker_API.routers import tasks
 
 app = FastAPI(title="Task tracker API")
 
